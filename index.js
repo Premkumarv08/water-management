@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
     res.send("Hello World!")
 });
 
-cron.schedule('* * * * *', () => {
+cron.schedule('0 * * * *', () => {
     waterMeterUpdate();
 });
 
