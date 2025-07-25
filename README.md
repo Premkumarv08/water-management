@@ -24,15 +24,6 @@ A Node.js-based backend system for managing daily water meter readings per house
 git clone https://github.com/Premkumarv08/water-management.git
 cd water-management
 npm install
-
-Here's a simple, clean `README.md` for your **Water Management System** project. You can customize it further based on your exact implementation:
-
-## 📦 Installation
-
-```bash
-git clone https://github.com/Premkumarv08/water-management.git
-cd water-management
-npm install
 ````
 
 ## ⚙️ Setup
