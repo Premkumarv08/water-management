@@ -1,0 +1,482 @@
+openapi: 3.0.0
+
+info:
+  title: Water API
+  version: 1.0.0
+  description: API documentation for the Water Management System
+
+servers:
+  - url: http://localhost:3000/
+    description: Local server
+
+components:
+  securitySchemes:
+    bearerAuth:            
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    
+    
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+
+security:
+  - bearerAuth: []
+
+paths:               
+  /auth/register:
+    post:      
+      tags:
+       - "AUTHENTICATION"
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:   
+                - name
+                - email
+                - mobile            
+                - password
+                - userRole
+                - DOB
+                - gender
+              properties:
+                name:
+                  type: string
+                  example: "Jack"
+                email:
+                  type: string
+                  example: "jack@example.com"
+                mobile:
+                  type: string
+                  example: "1234567890"
+                password:
+                  type: string
+                  example: "Pass@123"
+                userRole: 
+                  type: string
+                  example: "USER"  
+                DOB: 
+                  type: string
+                  example: "1997-03-26"
+                gender:
+                  type: string
+                  enum: [MALE, FEMALE]
+                  example: "MALE"            
+      responses:
+        "200":
+          description: User registered successfully
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+
+  /auth/login:
+    post:
+      tags:
+      - "AUTHENTICATION"
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string  
+                  example: "username"                 
+                password:
+                  type: string    
+                  example: "password"                           
+                           
+      responses:
+        "200":
+          description: Login successful
+        "400":
+          description: Invalid credentials
+        "401":
+          description: Unauthorized
+ 
+  /auth/userDetails:
+    post: 
+      security:
+        - bearerAuth: []     
+      tags:
+       - "USER"
+      summary: Fetch user and house details
+      responses:
+        "200":
+          description: User details fetched successfully
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized    
+
+  /house/addHouse:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - "HOUSE"
+      summary: Add a new house      
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId   
+                - email 
+                - mobile
+                - address
+                - city
+                - state
+                - country
+                - pincode
+              properties:
+                userId:
+                  type: string
+                  example: "60f7e2c8c9a1b23f1c8b4567"
+                name:
+                  type: string
+                  example: Jack's Residence
+                email:
+                  type: string
+                  example: jack@example.com
+                address:
+                  type: string
+                  example: 123 Water Street
+                city:
+                  type: string
+                  example: Springfield
+                state:
+                  type: string
+                  example: Illinois
+                district:
+                  type: string
+                  example: North
+                country:
+                  type: string
+                  example: USA
+                pincode:
+                  type: string
+                  example: "62704"
+                mobile:
+                  type: string
+                  example: "1234567890"                        
+      responses:
+        "200":
+          description: House added successfully
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+
+  /house/updateHouse/{id}:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - "HOUSE"
+      summary: Update house by ID   
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: "60f7e2c8c9a1b23f1c8b4567"
+                name:
+                  type: string
+                  example: "9876543210"
+                email:
+                  type: string
+                  example: "9876543210"
+                address:
+                  type: string
+                  example: "9876543210"
+                city:
+                  type: string
+                  example: "9876543210"
+                state:
+                  type: string
+                  example: "9876543210"
+                district:
+                  type: string
+                  example: "9876543210"
+                country:
+                  type: string 
+                  example: "9876543210"         
+                pincode:
+                  type: string
+                  example: "9876543210"
+                mobile:
+                  type: string   
+                  example: "9876543210"                         
+              required:
+                - userId   
+                - mobile
+                - address
+                - city
+                - state
+                - country
+                - pincode
+                - email                                    
+      responses:
+        "200":
+          description: House updated successfully
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+
+  /house/deleteHouse/{id}:
+    delete:
+      parameters:
+        - name: id
+          in: query
+          type: string
+          required: true
+      security:
+        - bearerAuth: []
+      tags:
+        - "HOUSE"
+      summary: Delete house by ID 
+      responses:
+        "200":
+          description: House deleted successfully
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+  
+  /house/getHouse/{id}:
+    get:
+      parameters:
+        - name: id
+          in: path
+          type: string
+          required: true 
+      security:
+        - bearerAuth: []
+      tags:
+        - "HOUSE"
+      summary: Get house by ID 
+      responses:
+        "200":
+          description: House fetched successfully
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+           
+  /house/getManyHouse:
+    get:
+      parameters:
+        - name: userId
+          in: query
+          type: string
+          required: false 
+        - name: startDate
+          in: query
+          type: string
+          required: true 
+        - name: endDate
+          in: query
+          type: string
+          required: true 
+        - name: searchValue
+          in: query
+          type: string
+          required: true 
+      security:
+        - bearerAuth: []
+      tags:
+        - "HOUSE"
+      description: ""
+      summary: Get list of houses with filters                                
+      responses:
+        "200":
+          description: Houses fetched successfully
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+
+  /spillAlert/addSpillAlert:
+    post:
+      tags:
+        - SpillAlert
+      summary: Add a new spill alert
+      description: Creates a new spill alert entry for a specific house.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - houseId
+                - date
+              properties:
+                houseId:
+                  type: string
+                  example: "64d6f7be2f4b4f1420c12345"
+                date:
+                  type: string
+                  format: date
+                  example: "2025-07-25"
+                message:
+                  type: string
+                  example: "Abnormal water usage detected"
+                resolved:
+                  type: boolean
+                  example: false
+      responses:
+        '200':
+          description: Spill alert created successfully
+        '400':
+          description: Bad request
+        "401":
+          description: Unauthorized
+
+  /spillAlert/getSpillAlerts:
+    get:
+      tags:
+        - SpillAlert
+      summary: Get all spill alerts
+      description: Retrieves spill alerts. Can be filtered by houseId.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: houseId
+          in: query
+          description: Optional filter by house ID
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Spill alerts fetched successfully
+        '400':
+          description: Invalid input or bad request
+        "401":
+          description: Unauthorized
+
+  /analytics/topConsumers/day:
+    get:
+      parameters:
+        - name: date
+          in: query
+          type: string
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          required: false
+      security:
+        - bearerAuth: []
+      tags:
+        - "ANALYTICS"
+      description: ""
+      summary: Get top water consumers by day
+      responses:
+        "200":
+          description: Top consumers fetched successfully
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+
+  /analytics/topConsumers/week:
+    get:
+      parameters:
+        - name: startDate
+          in: query
+          type: string
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          required: false
+      security:
+        - bearerAuth: []
+      tags:
+        - "ANALYTICS"
+      description: ""
+      summary: Get top water consumers for the week
+      responses:
+        "200":
+          description: Top consumers fetched successfully
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+
+  /usage/house/{houseId}:
+    get:
+      tags:
+        - Usage
+      summary: Get daily usage for a house within date range
+      parameters:
+        - name: houseId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Usage summary
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  houseId:
+                    type: string
+                  usage:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                          format: date
+                        used:
+                          type: number
+        '400':
+          description: Missing from/to dates
+        '404':
+          description: Meter not found
+        '500':
+          description: Server error
+
+components:
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid  
